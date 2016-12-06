@@ -9,7 +9,9 @@
         "messageSubject": "Network Scanner",
     },
     "options": {
-        "hosts": "192.168.2.1/24"
+        "hosts": "192.168.2.1/24",
+        "scanInterval": 50,
+        "orderBy": "name"
     },
     "devices": {}
 }

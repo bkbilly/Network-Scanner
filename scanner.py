@@ -2,9 +2,7 @@ import time
 import json
 import threading
 import os
-import subprocess
 import sys
-import pprint
 
 from flask import Flask, send_from_directory
 from flask_socketio import SocketIO
@@ -13,7 +11,6 @@ from email.mime.text import MIMEText
 
 import nmap
 from socket import inet_aton
-pp = pprint.PrettyPrinter(indent=4)
 
 
 class NetworkScanner():
@@ -82,13 +79,13 @@ class NetworkScanner():
                     "name": savedDevices[oldMac]['name']
                 })
 
-        self.devices = sorted(self.devices, key=lambda item: inet_aton(item['ip']))
+        self.devices = self.getDevices()
 
         if foundNewDevice:
             self.newDeviceDetected()
 
         if self.rerun is True:
-            threading.Timer(5, self.startScanning).start()
+            threading.Timer(self.settings['options']['scanInterval'], self.startScanning).start()
 
     def newDeviceDetected(self):
         self.writeNewDevices()
@@ -154,7 +151,19 @@ class NetworkScanner():
         socketio.emit('refresh_devices', self.getDevices())
 
     def getDevices(self):
-        return sorted(self.devices, key=lambda k: k['name'])
+        print self.devices
+        if self.settings['options']['orderBy'] == "name":
+            return sorted(self.devices, key=lambda k: k['name'])
+        elif self.settings['options']['orderBy'] == "ip":
+            return sorted(self.devices, key=lambda item: inet_aton(item['ip']))
+        else:
+            return self.devices
+
+
+if len(sys.argv) > 1:
+    if ".pid" in sys.argv[1]:
+        with open(sys.argv[1], "w") as f:
+            f.write(str(os.getpid()))
 
 
 app = Flask(__name__, static_url_path='')

@@ -1,0 +1,46 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: networkscanner
+# Required-Start: $local_fs $remote_fs
+# Required-Stop: $local_fs $remote_fs
+# Should-Start: $network
+# Should-Stop: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Multi-user daemonized version of networkscanner.
+# Description: Starts the networkscanner daemon for all registered users.
+### END INIT INFO
+
+NAME="networkscanner"
+PIDFILE='/var/run/networkscanner/networkscanner.pid'
+DAEMON='/usr/bin/python /opt/network_scanner/scanner.py'
+CONFIG='$PIDFILE'
+DAEMON_UID='root'
+DAEMON_GID='root'
+
+case "$1" in
+    start)
+        echo "Starting $NAME"
+        mkdir /var/run/networkscanner 2> /dev/null
+        chown $DAEMON_UID:$DAEMON_UID /var/run/networkscanner
+        start-stop-daemon --pidfile $PIDFILE --start --background -c $DAEMON_UID -x $DAEMON --chuid $DAEMON_UID:$DAEMON_GID -- $PIDFILE
+        ;;
+    stop)
+        echo "Stopping $NAME"
+        start-stop-daemon --pidfile $PIDFILE --stop -x $DAEMON
+        rm -r /var/run/networkscanner 2> /dev/null
+        ;;
+    status)
+        dbpid=`cat $PIDFILE`
+        if [ -z "$dbpid" ]; then
+          echo "Network Scanner not running."
+        else
+          echo "Network Scanner running (pid $dbpid)"
+        fi
+        ;;
+    *)
+        echo "Usage: /etc/init.d/networkscanner {start|stop|status}"
+        exit 1
+    esac
+exit 0
+
