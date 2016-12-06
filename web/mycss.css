@@ -1,0 +1,41 @@
+
+/* sensor */
+.hostdiv {
+	width: 80%;
+	/*float:left;*/
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.7);
+	margin: 1em;
+	height: 4em;
+	margin: 5px auto;
+	box-shadow: inset 0px 30px 40px -20px blue;
+	position: relative;
+}
+.hostname {
+	text-align: left;
+	padding: 10px;
+	margin-left: 10%;
+	font-size: x-large;
+	cursor: pointer;
+	-webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+	overflow:hidden;
+	white-space:nowrap; 
+	text-overflow: ellipsis;
+	margin-right: 4.5em;
+}
+.hostip {
+	position: absolute;
+	right: 0;
+	top: 20px;
+	width: 6em;
+	font-size: larger;
+}
+.hostmac {
+	position: absolute;
+	top: 35px;
+	left: 20%;
+	width: 6em;
+	font-size: medium;
+}
+
+
