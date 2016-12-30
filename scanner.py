@@ -87,6 +87,7 @@ class NetworkScanner():
 
         self.devices = self.getDevices()
 
+        self.writeDevices()
         if foundNewDevice:
             self.newDeviceDetected()
 
@@ -94,7 +95,6 @@ class NetworkScanner():
             threading.Timer(self.settings['options']['scanInterval'], self.startScanning).start()
 
     def newDeviceDetected(self):
-        self.writeNewDevices()
         mailBody = "\nNew device has been detected.\n\n"
         for device in self.devices:
             if device['status'] == 'new':
@@ -102,7 +102,7 @@ class NetworkScanner():
                 self.writeLog("new divice with MAC: {mac}".format(**device))
         self.sendMail(mailBody)
 
-    def writeNewDevices(self):
+    def writeDevices(self):
         settingsDevices = {}
         for device in self.devices:
             settingsDevices[device['mac']] = {
