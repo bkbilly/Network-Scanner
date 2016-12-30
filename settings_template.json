@@ -6,7 +6,7 @@
         "smtpServer": "smtp.gmail.com",
         "smtpPort": 587,
         "recipients": [],
-        "messageSubject": "Network Scanner",
+        "messageSubject": "Network Scanner"
     },
     "options": {
         "hosts": "192.168.2.1/24",

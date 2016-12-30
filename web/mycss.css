@@ -37,5 +37,11 @@
 	width: 6em;
 	font-size: medium;
 }
-
+.lastonline {
+	position: absolute;
+	right: 0;
+	top: 40px;
+	width: 9em;
+	font-size: small;
+}
 

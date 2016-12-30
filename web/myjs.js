@@ -1,8 +1,9 @@
 var socket = io();
 var sensor = '<div class="hostdiv" id="hostdiv{mac}" style="{cssDiv}">\
 	<div class="hostname" id="hostname{mac}" onclick="changeName(this, \'{mac}\')">{hostname}</div>\
-	<div class="hostip">{hostip}</div>\
-	<div class="hostmac">{mac}</div>\
+	<div class="hostip">{hostip}</div><br>\
+	<div class="lastonline" style="display:{displaylastonline}">{lastonline}</div><br>\
+	<div class="hostmac">{mac}</div><br>\
 </div>'
 
 $( document ).ready(function() {
@@ -31,11 +32,14 @@ function startAgain(){
 		$.each(data, function(i, item){
 			var tmpsensor = sensor
 			btnColour = (item.state === "up" ? "green" : "red");
+			displayStatus = (item.state === "up" ? "none" : "block");
 			shadowBtnColour = "box-shadow: inset 0px 30px 40px -20px " + btnColour + ";"
 			tmpsensor = tmpsensor.replace(/\{mac\}/g, item.mac)
 			tmpsensor = tmpsensor.replace(/\{hostname\}/g, item.name)
 			tmpsensor = tmpsensor.replace(/\{hostip\}/g, item.ip)
 			tmpsensor = tmpsensor.replace(/\{cssDiv\}/g, shadowBtnColour)
+			tmpsensor = tmpsensor.replace(/\{lastonline\}/g, item.lastOnline)
+			tmpsensor = tmpsensor.replace(/\{displaylastonline\}/g, displayStatus)
 			$(tmpsensor).appendTo("#sensors");
 		});
 	});

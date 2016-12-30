@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import time
 import json
 import threading
@@ -11,6 +13,8 @@ from email.mime.text import MIMEText
 
 import nmap
 from socket import inet_aton
+
+from datetime import datetime
 
 
 class NetworkScanner():
@@ -58,7 +62,8 @@ class NetworkScanner():
                     "mac": newMac,
                     "status": hostStatus,
                     "state": hostState,
-                    "name": hostName
+                    "name": hostName,
+                    "lastOnline": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 })
             else:
                 # self.nm[host]['status']['reason'] == localhost-response
@@ -76,7 +81,8 @@ class NetworkScanner():
                     "mac": oldMac,
                     "status": "known",
                     "state": "down",
-                    "name": savedDevices[oldMac]['name']
+                    "name": savedDevices[oldMac]['name'],
+                    "lastOnline": savedDevices[oldMac]['lastOnline']
                 })
 
         self.devices = self.getDevices()
@@ -101,7 +107,8 @@ class NetworkScanner():
         for device in self.devices:
             settingsDevices[device['mac']] = {
                 "ip": device['ip'],
-                "name": device['name']
+                "name": device['name'],
+                "lastOnline": device['lastOnline']
             }
         self.settings['devices'] = settingsDevices
 
