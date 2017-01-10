@@ -151,7 +151,7 @@ class NetworkScanner():
         for i, device in enumerate(self.devices):
             if device['mac'] == mac:
                 self.devices[i]['name'] = name
-        self.writeNewDevices()
+        self.writeDevices()
 
     def refreshDevices(self):
         self.startScanning()
