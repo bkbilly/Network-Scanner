@@ -1,10 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 
 import time
 import json
 import threading
 import os
 import sys
+import subprocess
 
 from flask import Flask, send_from_directory
 from flask_socketio import SocketIO
@@ -37,8 +40,8 @@ class NetworkScanner():
         threading.Thread(target=self.startScanning).start()
 
     def startScanning(self):
-        print "startScanning..."
-        self.nm.scan(hosts=self.settings['options']['hosts'], arguments='-sP -n')
+        print("startScanning...")
+        self.nm.scan(hosts=self.settings['options']['hosts'], arguments='-sn')
         self.settings = self.ReadSettings()
         savedDevices = self.settings["devices"]
         foundNewDevice = False
@@ -50,7 +53,9 @@ class NetworkScanner():
                 if newMac not in savedDevices:
                     foundNewDevice = True
                     hostStatus = "new"
-                    if newMac in self.nm[host]['vendor']:
+                    if self.nm[host]['hostnames'][0]['name'] != '':
+                        hostName = self.nm[host]['hostnames'][0]['name']
+                    elif newMac in self.nm[host]['vendor']:
                         hostName = self.nm[host]['vendor'][newMac]
                     else:
                         hostName = "unknown"
@@ -98,6 +103,10 @@ class NetworkScanner():
         mailBody = "\nNew device has been detected.\n\n"
         for device in self.devices:
             if device['status'] == 'new':
+                if 'systemcmd' in self.settings:
+                    for cmd in self.settings['systemcmd']:
+                        print(cmd.format(**device))
+                        subprocess.call(cmd.format(**device), shell=True)
                 mailBody = mailBody + "Device: {mac}\nIP: {ip}\nName: {name}\n\n".format(**device)
                 self.writeLog("new divice with MAC: {mac}".format(**device))
         self.sendMail(mailBody)
@@ -158,7 +167,7 @@ class NetworkScanner():
         socketio.emit('refresh_devices', self.getDevices())
 
     def getDevices(self):
-        print self.devices
+        #print(self.devices)
         if self.settings['options']['orderBy'] == "name":
             return sorted(self.devices, key=lambda k: k['name'])
         elif self.settings['options']['orderBy'] == "ip":
